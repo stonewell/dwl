@@ -270,6 +270,7 @@ static void setcursor(struct wl_listener *listener, void *data);
 static void setfloating(Client *c, int floating);
 static void setfullscreen(Client *c, int fullscreen);
 static void setlayout(const Arg *arg);
+static void rotatelayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setmon(Client *c, Monitor *m, unsigned int newtags);
 static void setpsel(struct wl_listener *listener, void *data);
@@ -1072,7 +1073,7 @@ createpointer(struct wlr_input_device *device)
 
 		if (libinput_device_config_scroll_get_methods(libinput_device) != LIBINPUT_CONFIG_SCROLL_NO_SCROLL)
 			libinput_device_config_scroll_set_method (libinput_device, scroll_method);
-		
+
 		if (libinput_device_config_click_get_methods(libinput_device) != LIBINPUT_CONFIG_CLICK_METHOD_NONE)
 			libinput_device_config_click_set_method (libinput_device, click_method);
 
@@ -1995,6 +1996,30 @@ setlayout(const Arg *arg)
 	/* TODO change layout symbol? */
 	arrange(selmon);
 	printstatus();
+}
+
+void
+rotatelayout(const Arg *arg)
+{
+  const Layout * layout;
+  Arg vArg;
+
+	if (!selmon)
+		return;
+
+  for(layout = layouts; layout < END(layouts); layout++) {
+    if (layout == selmon->lt[selmon->sellt]) {
+      layout++;
+      break;
+    }
+  }
+
+  if (!(layout < END(layouts))) {
+    layout = &layouts[0];
+  }
+
+  vArg.v = layout;
+  setlayout(&vArg);
 }
 
 /* arg > 1.0 will set mfact absolutely */
