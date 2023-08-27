@@ -18,6 +18,7 @@ static const Rule rules[] = {
   { "Firefox",  NULL,       1 << 1,       0,           -1 },
   { NULL,       "微信",      1 << 8,       0,           -1 },
   { "weixin",   NULL,      1 << 8,       0,           -1 },
+  { "Rofi", NULL, 0, 1, -1},
 };
 
 /* layout(s) */
@@ -96,7 +97,7 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 #define MODKEY WLR_MODIFIER_LOGO
 
 #define TAGKEYS(KEY,SKEY,TAG) \
-  { MODKEY,                    KEY,            view,            {.ui = 1 << TAG} }, \
+{ MODKEY,                    KEY,            view,            {.ui = 1 << TAG} }, \
 { MODKEY|WLR_MODIFIER_CTRL,  KEY,            toggleview,      {.ui = 1 << TAG} }, \
 { MODKEY|WLR_MODIFIER_SHIFT, SKEY,           tag,             {.ui = 1 << TAG} }, \
 { MODKEY|WLR_MODIFIER_CTRL|WLR_MODIFIER_SHIFT,SKEY,toggletag, {.ui = 1 << TAG} }
@@ -105,15 +106,13 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *termcmd[] = { "alacritty", "-e", "start-zellij.sh", NULL };
-static const char *menucmd[] = { "wofi", "--show", "drun,run", NULL };
 static const char *lockcmd[] = { "swaylock", "-f", "-c", "000000", NULL };
 
 static const Key keys[] = {
   /* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
   /* modifier                  key                 function        argument */
-  { WLR_MODIFIER_ALT|WLR_MODIFIER_CTRL,         XKB_KEY_space,  spawn,          {.v = menucmd} },
-  { MODKEY,                    XKB_KEY_Return,     spawn,          {.v = termcmd} },
+  { WLR_MODIFIER_ALT|WLR_MODIFIER_CTRL,         XKB_KEY_space,  spawn,          SHCMD("~/.run_launcher") },
+  { MODKEY,                    XKB_KEY_Return,     spawn,          SHCMD("~/.run_term_cmd") },
   { MODKEY,                    XKB_KEY_j,          focusstack,     {.i = +1} },
   { MODKEY,                    XKB_KEY_k,          focusstack,     {.i = -1} },
   { MODKEY,                    XKB_KEY_l,          spawn,          {.v = lockcmd} },
@@ -132,7 +131,7 @@ static const Key keys[] = {
   { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_L,          setmfact,       {.f = +0.05} },
 
   { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_T,          togglefloating, {0} },
-  { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_F,         togglefullscreen, {0} },
+  { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_F,          togglefullscreen, {0} },
 
   //{ MODKEY,                    XKB_KEY_Tab,        view,           {0} },
   //{ MODKEY,                    XKB_KEY_0,          view,           {.ui = ~0} },
